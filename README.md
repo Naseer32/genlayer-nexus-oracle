@@ -35,28 +35,56 @@ inside it, only to judge the claim against it.
 
 ## Deployments
 
-### GenLayer Bradbury testnet (current)
+### GenLayer Bradbury testnet (primary, with treasury withdrawal)
+- Contract: `contracts/nexus_opportunity_oracle_v4_bradbury.py`
+- Address: `0x853d76e2D396B00f482Ef1fE18305aB3aBbaE785`
+- Adds an `owner` (the deployer) and `withdraw_treasury(to_address, amount)`, so
+  forfeited bonds in the treasury are not stuck forever.
+- Scam case verified end to end: submit -> verify (`scam_risk`, bond moved to
+  treasury) -> `get_stats` shows `treasury_wei` increase -> `withdraw_treasury`
+  -> `get_stats` shows `treasury_wei` back to 0. Contract-side state and
+  consensus logic are fully correct and reproducible on-chain.
+
+### GenLayer Bradbury testnet (earlier version, no treasury withdrawal)
 - Contract: `contracts/nexus_opportunity_oracle_v3_bradbury.py`
 - Address: `0x49095bd5A0788A8489412178626Da3071FA415ef`
-- Verified case (`opp_0`, real grant fixture):
-  - submit: `0x6d3fcefb75bc4fe51c0f4faa14c40c3b028cbb65915082ca311cf2b908004595`
-  - verify: `0xf4eef7f702381867b8120c15822da920c895eb6aa7f2a4711a3bd0664e4c9e42`
-  - Result: `verdict: verified`, `reward_tier: medium`, bond refunded in full
-- Scam case (`opp_1`, scam fixture):
-  - verify: `0x66e44f40ce350b3dfc013fff9aa44ff2f13c6bea2fbb0795aaa0d0356c15330e`
-  - Result: `verdict: scam_risk`, `reward_tier: none`, bond forfeited to treasury
+- Verified case (`opp_0`, real grant fixture): submit
+  `0x6d3fcefb75bc4fe51c0f4faa14c40c3b028cbb65915082ca311cf2b908004595`,
+  verify `0xf4eef7f702381867b8120c15822da920c895eb6aa7f2a4711a3bd0664e4c9e42`
+  -> `verdict: verified`, `reward_tier: medium`
+- Scam case (`opp_1`, scam fixture): submit
+  `0x0150b9ac55087d1770fb970f785dfdf09a57268795a01accd2e6e130a9ddfded`,
+  verify `0x66e44f40ce350b3dfc013fff9aa44ff2f13c6bea2fbb0795aaa0d0356c15330e`
+  -> `verdict: scam_risk`, bond moved to treasury
 
-### GenLayer studionet (earlier validation)
+### GenLayer studionet (proof that real GEN settlement works)
 - Contract: `contracts/nexus_opportunity_oracle_v2.py`
 - Address: `0x7a5C0D691B95bC2cbEEd2C238cFa30371c333C4e`
 - Verified case (`opp_0`): submit
   `0x0be175258d745c99dfc276b6236dabf6084bb65b51fb19ef3437583b01daaded`,
   verify `0x2aab4bedf6673ae9a3380700e24a68427f96e3aaad0b85ec48b67cfa95633c04`
+  -> bond actually refunded to the submitter's wallet, confirmed on-chain
 - Scam case (`opp_1`): submit
   `0x3dae89196fe7d68e2b7b1e1a0f2e8a132b5d55d96cb7f64281bc3716be658910`,
   verify `0x645b9c86bb1d4dcd5ccf2a307852d9fc4e182c8b8a2fd721b17244e1b8f1f558`
+  -> bond actually forfeited to treasury, confirmed on-chain
 
-Evidence fixtures used for testing live in `evidence/`.
+## Known platform limitation (Bradbury / Asimov testnet)
+
+On Bradbury testnet (and Asimov, which shares chain id 4221), GenVM records
+an emitted payout message (`emit_transfer`) in the transaction, but the
+underlying GEN transfer is not currently executed on-chain. This is a
+documented, platform-level issue affecting any GenLayer contract that pays
+out GEN on this testnet, not specific to NEXUS:
+https://github.com/genlayerlabs/genvm-manager/issues/20
+
+We reproduced this independently: NEXUS's verdict/treasury state updates
+correctly on Bradbury every time (`verified` refunds logged, `scam_risk`
+forfeitures logged, `withdraw_treasury` zeroes the treasury counter), but
+the wallet's real GEN balance does not change. The exact same payout code
+path was verified to work correctly end-to-end on studionet (see above),
+confirming the contract logic itself is correct and the gap is specific to
+Bradbury's current message-execution behavior.
 
 ## Test evidence
 - `evidence/sample_grant.txt` — a realistic grant announcement (used for the
