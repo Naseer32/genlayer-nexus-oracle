@@ -36,7 +36,7 @@ inside it, only to judge the claim against it.
 ## Deployments
 
 ### GenLayer Bradbury testnet (primary, with treasury withdrawal)
-- Contract: `contracts/nexus_opportunity_oracle_v4_bradbury.py`
+- Contract: `contracts/nexus_opportunity_oracle.py`
 - Address: `0x853d76e2D396B00f482Ef1fE18305aB3aBbaE785`
 - Adds an `owner` (the deployer) and `withdraw_treasury(to_address, amount)`, so
   forfeited bonds in the treasury are not stuck forever.
@@ -46,7 +46,7 @@ inside it, only to judge the claim against it.
   consensus logic are fully correct and reproducible on-chain.
 
 ### GenLayer Bradbury testnet (earlier version, no treasury withdrawal)
-- Contract: `contracts/nexus_opportunity_oracle_v3_bradbury.py`
+- Contract: `contracts/nexus_opportunity_oracle.py (earlier Bradbury version, not kept in repo)`
 - Address: `0x49095bd5A0788A8489412178626Da3071FA415ef`
 - Verified case (`opp_0`, real grant fixture): submit
   `0x6d3fcefb75bc4fe51c0f4faa14c40c3b028cbb65915082ca311cf2b908004595`,
@@ -58,7 +58,7 @@ inside it, only to judge the claim against it.
   -> `verdict: scam_risk`, bond moved to treasury
 
 ### GenLayer studionet (proof that real GEN settlement works)
-- Contract: `contracts/nexus_opportunity_oracle_v2.py`
+- Contract: `contracts/nexus_opportunity_oracle.py (earlier studionet version, not kept in repo)`
 - Address: `0x7a5C0D691B95bC2cbEEd2C238cFa30371c333C4e`
 - Verified case (`opp_0`): submit
   `0x0be175258d745c99dfc276b6236dabf6084bb65b51fb19ef3437583b01daaded`,
