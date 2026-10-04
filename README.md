@@ -104,3 +104,9 @@ specific to Bradbury's current message-execution behavior.
 This contract does not predict prices, execute trades, or promise any
 return. It only checks whether a claim about an opportunity is backed by
 its stated source, and makes that check consequential through a bond.
+EOF
+
+git add -A
+git commit -qm "Rewrite README for single-contract repo layout"
+git push -q
+echo "PUSHED"
