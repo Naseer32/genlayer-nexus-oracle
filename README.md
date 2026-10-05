@@ -13,6 +13,19 @@ Most "opportunities" shared in Web3/crypto spaces are unverifiable or
 outright scams. There is no neutral, on-chain way to check a claim against
 its actual source before people spend time or money on it.
 
+## Live app
+
+https://frontend-mrbv.vercel.app/
+
+Next.js app with wallet connect (MetaMask), submit-with-bond, live verify,
+and an owner-only treasury withdrawal panel. Full submit -> verify lifecycle
+confirmed working through the deployed UI itself (not just Studio/CLI):
+title "Nexus Test Grant", bond 0.1 GEN, submitted by wallet
+0x53b20BeADADe01b46a3fb5bdbC85D3A7B0f12A96 -> opp_1 -> verified via the
+"Verify with validators" button, reason correctly citing the grant fixture.
+The app also displays the known Bradbury payout limitation (see below) so
+users are not misled about real GEN movement.
+
 ## How it works
 
 Contract: `contracts/nexus_opportunity_oracle.py`
