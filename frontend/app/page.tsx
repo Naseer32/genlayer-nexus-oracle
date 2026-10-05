@@ -14,7 +14,7 @@ const gen = (wei: string) => String(Number(wei) / 1e18);
 const input = "w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-emerald-400";
 
 export default function Home() {
-  const { address, connect } = useAccount();
+  const { address, connect, disconnect } = useAccount();
   const [opps, setOpps] = useState<Opp[]>([]);
   const [stats, setStats] = useState({ count: 0, treasury_wei: "0", owner: "" });
   const [cat, setCat] = useState("All");
@@ -57,8 +57,14 @@ export default function Home() {
     <main className="mx-auto max-w-3xl px-4 py-6">
       <header className="flex items-center justify-between">
         <div className="text-2xl font-black tracking-widest text-emerald-400">NEXUS</div>
-        {address ? <span className="rounded-full bg-white/10 px-3 py-1 font-mono text-xs">{short(address)}</span>
-          : <button onClick={() => connect().catch((e) => setErr(e.message))} className="rounded-lg bg-emerald-400 px-4 py-2 text-sm font-bold text-black">Connect wallet</button>}
+        {address ? (
+          <div className="flex items-center gap-2">
+            <span className="rounded-full bg-white/10 px-3 py-1 font-mono text-xs">{short(address)}</span>
+            <button onClick={disconnect} className="rounded-full bg-white/10 px-3 py-1 text-xs text-red-300 hover:bg-white/20">Disconnect</button>
+          </div>
+        ) : (
+          <button onClick={() => connect().catch((e) => setErr(e.message))} className="rounded-lg bg-emerald-400 px-4 py-2 text-sm font-bold text-black">Connect wallet</button>
+        )}
       </header>
 
       <div className="mt-4 rounded-xl border border-amber-400/30 bg-amber-400/10 p-3 text-xs text-amber-200">

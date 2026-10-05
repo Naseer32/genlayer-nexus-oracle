@@ -33,5 +33,6 @@ export function useAccount() {
     }
     setAddress(a[0] ?? null);
   }, []);
-  return { address, connect };
+  const disconnect = useCallback(() => setAddress(null), []);
+  return { address, connect, disconnect };
 }
